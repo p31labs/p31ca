@@ -1,0 +1,86 @@
+{
+  "version": "1.0.0",
+  "description": "P31 Neo4j Knowledge Graph Schema",
+  "database": {
+    "uri": "bolt://neo4j:7687",
+    "default_user": "neo4j",
+    "default_password": "p31delta"
+  },
+  "node_labels": {
+    "Node": {
+      "description": "Primary knowledge node ingested by the buffer agent",
+      "properties": {
+        "id": { "type": "string", "required": true, "unique": true },
+        "content": { "type": "string", "required": true },
+        "axis": { "type": "string", "enum": ["A", "B", "C", "D"], "required": true },
+        "created": { "type": "datetime", "required": true },
+        "voltage_composite": { "type": "float", "default": 0.0 },
+        "voltage_level": { "type": "string", "enum": ["GREEN", "YELLOW", "RED", "CRITICAL"] }
+      }
+    },
+    "File": {
+      "description": "Codebase file tracked by the graph loader",
+      "properties": {
+        "path": { "type": "string", "required": true, "unique": true },
+        "name": { "type": "string", "required": true },
+        "extension": { "type": "string" },
+        "axis": { "type": "string", "enum": ["A", "B", "C", "D"] }
+      }
+    },
+    "Directory": {
+      "description": "Codebase directory",
+      "properties": {
+        "path": { "type": "string", "required": true, "unique": true },
+        "name": { "type": "string", "required": true }
+      }
+    },
+    "Operator": {
+      "description": "Human operator profile",
+      "properties": {
+        "id": { "type": "string", "required": true, "unique": true },
+        "username": { "type": "string" },
+        "spoon_baseline": { "type": "integer", "default": 12 }
+      }
+    }
+  },
+  "relationship_types": {
+    "CONTAINS": {
+      "description": "Directory contains file or subdirectory",
+      "from": ["Directory"],
+      "to": ["File", "Directory"]
+    },
+    "RELATES_TO": {
+      "description": "Semantic relationship between knowledge nodes",
+      "from": ["Node"],
+      "to": ["Node"],
+      "properties": {
+        "weight": { "type": "float", "default": 1.0 },
+        "created": { "type": "datetime" }
+      }
+    },
+    "TAGGED": {
+      "description": "Node tagged with taxonomy axis",
+      "from": ["Node"],
+      "to": ["Node"]
+    },
+    "INGESTED_BY": {
+      "description": "Node ingested by operator",
+      "from": ["Node"],
+      "to": ["Operator"],
+      "properties": {
+        "timestamp": { "type": "datetime" }
+      }
+    }
+  },
+  "constraints": [
+    "CREATE CONSTRAINT IF NOT EXISTS FOR (n:Node) REQUIRE n.id IS UNIQUE",
+    "CREATE CONSTRAINT IF NOT EXISTS FOR (f:File) REQUIRE f.path IS UNIQUE",
+    "CREATE CONSTRAINT IF NOT EXISTS FOR (d:Directory) REQUIRE d.path IS UNIQUE",
+    "CREATE CONSTRAINT IF NOT EXISTS FOR (o:Operator) REQUIRE o.id IS UNIQUE"
+  ],
+  "indexes": [
+    "CREATE INDEX IF NOT EXISTS FOR (n:Node) ON (n.axis)",
+    "CREATE INDEX IF NOT EXISTS FOR (n:Node) ON (n.created)",
+    "CREATE INDEX IF NOT EXISTS FOR (f:File) ON (f.axis)"
+  ]
+}

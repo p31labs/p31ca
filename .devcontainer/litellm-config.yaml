@@ -1,0 +1,26 @@
+model_list:
+  - model_name: reasoning
+    litellm_params:
+      model: anthropic/claude-sonnet-4-20250514
+      api_key: os.environ/ANTHROPIC_API_KEY
+  - model_name: code
+    litellm_params:
+      model: deepseek/deepseek-coder-v2
+      api_key: os.environ/DEEPSEEK_API_KEY
+  - model_name: multimodal
+    litellm_params:
+      model: gemini/gemini-2.5-pro
+      api_key: os.environ/GOOGLE_API_KEY
+  - model_name: local
+    litellm_params:
+      model: ollama/qwen2.5-coder:7b
+      api_base: http://ollama:11434
+
+router_settings:
+  routing_strategy: simple-shuffle
+  fallbacks:
+    - reasoning: [multimodal, local]
+    - code: [reasoning, local]
+    - multimodal: [reasoning, local]
+  num_retries: 3
+  request_timeout: 30

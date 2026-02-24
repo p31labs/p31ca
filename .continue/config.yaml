@@ -1,0 +1,41 @@
+name: P31 Delta Topology
+version: 1
+models:
+  - name: Claude (Reasoning)
+    provider: anthropic
+    model: claude-sonnet-4-20250514
+    apiKey: "{{ANTHROPIC_API_KEY}}"
+    roles: [chat, edit]
+  - name: DeepSeek (Code)
+    provider: openai
+    model: deepseek-coder-v2
+    apiBase: https://api.deepseek.com/v1
+    apiKey: "{{DEEPSEEK_API_KEY}}"
+    roles: [autocomplete]
+  - name: Gemini (Vision)
+    provider: google
+    model: gemini-2.5-pro
+    apiKey: "{{GOOGLE_API_KEY}}"
+    roles: [chat]
+  - name: Local (Offline)
+    provider: ollama
+    model: qwen2.5-coder:7b
+    apiBase: http://localhost:11434
+    roles: [apply, summarize]
+  - name: Embeddings
+    provider: transformers.js
+    roles: [embed]
+
+rules:
+  - When filepath contains "firmware" or extension is ".c", ".h", or name is "platformio.ini", use DeepSeek
+  - When filepath contains "frontend" or extension is ".tsx", ".jsx", ".ts", ".js", use Claude
+  - When user asks about images or schematics, use Gemini
+  - Always use Local for summarization to preserve privacy
+
+contextProviders:
+  - name: google
+    params:
+      model: gemini-2.5-pro
+  - name: diff
+  - name: terminal
+  - name: problems

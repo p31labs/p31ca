@@ -1,0 +1,27 @@
+# P31 EDE Code Owners
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner
+*                           @classicwilly
+
+# Infrastructure
+docker-compose*.yml         @classicwilly
+Caddyfile                   @classicwilly
+justfile                    @classicwilly
+.devcontainer/              @classicwilly
+.github/                    @classicwilly
+
+# Backend
+backend/                    @classicwilly
+
+# Frontend
+frontend/                   @classicwilly
+
+# Firmware
+firmware/                   @classicwilly
+
+# Extensions
+extensions/                 @classicwilly
+
+# Documentation
+docs/                       @classicwilly

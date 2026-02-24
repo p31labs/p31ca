@@ -1,0 +1,10 @@
+#!/data/data/com.termux/files/usr/bin/bash
+echo "P31 EDE — Status"
+for svc in "code-server:8080" "Frontend:3031" "Backend:8031"; do
+    name="${svc%%:*}"; port="${svc##*:}"
+    if curl -s --connect-timeout 2 "http://localhost:$port" > /dev/null 2>&1; then
+        echo "  ● $name (:$port) — LIVE"
+    else
+        echo "  ○ $name (:$port) — DOWN"
+    fi
+done

@@ -1,0 +1,17 @@
+language: en-US
+reviews:
+  profile: chill
+  auto_review:
+    enabled: true
+    drafts: false
+  path_instructions:
+    - path: "firmware/**"
+      instructions: "Review for memory safety, CRC8 correctness, and ESP32-S3 compatibility."
+    - path: "frontend/**"
+      instructions: "Check Three.js r128 compatibility. No CapsuleGeometry. instanceColor must be set before first render."
+    - path: "extensions/**"
+      instructions: "Verify VS Code API usage and accessibility compliance."
+    - path: "backend/**"
+      instructions: "Check FastAPI patterns, Neo4j query safety, and WebSocket handling."
+chat:
+  auto_reply: true

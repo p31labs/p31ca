@@ -1,0 +1,32 @@
+name: Feature Request
+description: Suggest a feature for P31 EDE
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      placeholder: Describe the need...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Frontend (Dashboard)
+        - Backend (FastAPI)
+        - Firmware (ESP32-S3)
+        - Extensions (VS Code)
+        - Infrastructure
+        - Documentation
+        - New component
+    validations:
+      required: true

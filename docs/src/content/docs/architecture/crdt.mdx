@@ -1,0 +1,68 @@
+---
+title: CRDT Synchronization
+description: Conflict-free replicated data types for mesh coordination
+---
+
+## Overview
+
+P31 uses **CRDTs** (Conflict-free Replicated Data Types) for eventually-consistent
+data synchronization across the mesh. This enables offline-first operation: nodes
+can diverge and automatically reconcile without conflicts.
+
+## Why CRDTs?
+
+Traditional synchronization requires a central authority to resolve conflicts.
+In the P31 delta topology, there is no center. CRDTs guarantee that:
+
+1. All replicas converge to the same state
+2. No coordination is needed between nodes
+3. Operations are commutative, associative, and idempotent
+
+## Implementation
+
+The P31 CRDT layer uses [Yjs](https://yjs.dev/) for document synchronization:
+
+- **Y.Doc** — shared document state
+- **Y.Map** — key-value stores for node metadata
+- **Y.Array** — ordered collections for timeline data
+- **Y.Text** — collaborative text editing
+
+Communication uses the backend WebSocket at `:8031/ws`.
+
+## Data Model
+
+```
+Y.Doc (per operator)
+├── nodes: Y.Map<NodeID, NodeData>
+│   ├── content: string
+│   ├── axis: 'A' | 'B' | 'C' | 'D'
+│   ├── voltage: VoltageScore
+│   └── created: timestamp
+├── spoons: Y.Map
+│   ├── current: number
+│   ├── baseline: number
+│   └── history: Y.Array<SpoonEvent>
+└── settings: Y.Map
+    ├── disclosureLayer: number
+    └── breathingPattern: object
+```
+
+## Sync Protocol
+
+1. Client connects via WebSocket to `:8031/ws`
+2. Server sends current Y.Doc state as initial sync
+3. Incremental updates flow bidirectionally
+4. On reconnect, Yjs automatically merges diverged states
+
+## Neo4j Integration
+
+The Neo4j knowledge graph at `:7474` serves as the **persistent store**.
+CRDTs handle real-time state; Neo4j handles queryable history.
+
+Sync flow: `CRDT (real-time) → Neo4j (persistence) → CRDT (recovery)`
+
+## Future: Mesh Networking
+
+When LoRa mesh networking is enabled (via Meshtastic on the ESP32-S3),
+CRDTs will enable peer-to-peer synchronization between Node One devices
+without any cloud infrastructure.

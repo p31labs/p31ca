@@ -1,0 +1,60 @@
+---
+title: AI Mesh (Delta Topology)
+description: Multi-model AI routing with semantic classification
+---
+
+## Overview
+
+The P31 AI mesh uses a **delta topology** — three primary models plus a local fallback,
+routed by a semantic classifier. No single model is a dependency. The system degrades
+gracefully: if Claude is unavailable, queries route to Gemini; if all cloud models fail,
+Ollama handles everything locally.
+
+## Model Roles
+
+| Model | Role | Provider | Use Case |
+|-------|------|----------|----------|
+| Claude (Sonnet) | Reasoning | Anthropic | Architecture, integration, complex analysis |
+| DeepSeek Coder V2 | Code | DeepSeek | Firmware, tests, code generation |
+| Gemini 2.5 Pro | Vision | Google | Documentation, schematics, long context |
+| Qwen 2.5 Coder 7B | Local | Ollama | Offline summarization, privacy-sensitive |
+
+## Routing
+
+The semantic router (`backend/router.py`) classifies incoming queries into domains
+using embedding-based similarity matching. Each domain maps to an optimal model.
+
+Domains: `FIRMWARE`, `FRONTEND`, `BACKEND`, `COGNITIVE`, `DOCS`
+
+When the semantic router is unavailable (first run, no embeddings), a keyword-based
+fallback provides basic routing.
+
+## LiteLLM Proxy
+
+All model calls route through LiteLLM at `:4000`, which provides:
+
+- Unified API across providers
+- Automatic failover (configured fallback chains)
+- Request retry (3 attempts, 30s timeout)
+- Cost tracking
+
+Configuration: `.devcontainer/litellm-config.yaml`
+
+## Continue.dev Integration
+
+The `.continue/config.yaml` configures VS Code's Continue extension to use the mesh:
+
+- File-type routing: `.c`/`.h` files → DeepSeek, `.tsx`/`.jsx` → Claude
+- Image/schematic queries → Gemini
+- Summarization → Local (Ollama) for privacy
+- Embeddings → transformers.js (runs in-browser)
+
+## Fallback Chain
+
+```
+reasoning → multimodal → local
+code      → reasoning  → local
+multimodal → reasoning → local
+```
+
+Every query has a path to completion, even fully offline.

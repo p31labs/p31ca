@@ -1,0 +1,45 @@
+---
+title: Quickstart
+description: Your first 5 minutes with P31 EDE
+---
+
+## 1. Start Services
+
+```bash
+just dev        # Neo4j, Caddy, Ollama, LiteLLM
+just frontend   # Vite on :3031
+just backend    # FastAPI on :8031
+```
+
+## 2. Open the Dashboard
+
+Navigate to `http://localhost:3031`. You should see:
+
+- **Spaceship Earth** — geodesic dome visualization with seed nodes
+- **Connection indicator** — `● LIVE` when backend is connected
+- **Spoon gauge** — bottom right, showing 12/12 COMMAND
+
+## 3. Ingest a Node
+
+```bash
+curl -X POST http://localhost:8031/ingest \
+  -H "Content-Type: application/json" \
+  -d '{"content": "My first node", "axis": "D"}'
+```
+
+The dashboard updates in real-time via WebSocket.
+
+## 4. Try the Breathing Pacer
+
+Press **B** to toggle the 4-2-6 breathing pacer.
+
+## 5. Open the Dev Menu
+
+Press **D** to see system status: node count, spoon level, WebSocket state.
+
+## Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| B | Toggle breathing pacer |
+| D | Toggle dev menu |

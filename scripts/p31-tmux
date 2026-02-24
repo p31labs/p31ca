@@ -1,0 +1,47 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# ═══════════════════════════════════════════════════════════════════
+# P31 EDE — tmux Layout for Pixel 9 Pro Fold (8" inner display)
+# ═══════════════════════════════════════════════════════════════════
+#
+# Creates a 4-pane tmux session:
+#   ┌──────────────────────────────────┐
+#   │           backend (top)          │
+#   ├─────────────────┬────────────────┤
+#   │   frontend      │    shell       │
+#   ├─────────────────┴────────────────┤
+#   │           logs (bottom)          │
+#   └──────────────────────────────────┘
+#
+# Usage: p31-tmux
+
+SESSION="p31"
+
+# Kill existing session
+tmux kill-session -t $SESSION 2>/dev/null || true
+
+# Create session with backend pane
+tmux new-session -d -s $SESSION -n 'ede' -c ~/p31
+
+# Top pane: backend
+tmux send-keys -t $SESSION "cd ~/p31/backend && uvicorn buffer_agent:app --host 0.0.0.0 --port 8031 --reload" C-m
+
+# Split horizontal for middle row
+tmux split-window -v -t $SESSION -c ~/p31/frontend
+tmux send-keys -t $SESSION "npm run dev -- --host 0.0.0.0" C-m
+
+# Split middle row vertical for shell
+tmux split-window -h -t $SESSION -c ~/p31
+tmux send-keys -t $SESSION "echo 'P31 Shell ready. p31-status for health check.'" C-m
+
+# Bottom pane: logs
+tmux split-window -v -t $SESSION -c ~/p31
+tmux send-keys -t $SESSION "tail -f ~/p31/.logs/*.log 2>/dev/null || echo 'No logs yet. Run p31-start first.'" C-m
+
+# Resize panes for Fold screen (roughly equal)
+tmux select-layout -t $SESSION tiled
+
+# Focus on the shell pane
+tmux select-pane -t 2
+
+# Attach
+tmux attach-session -t $SESSION

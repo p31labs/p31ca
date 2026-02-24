@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "continue.continue",
+    "platformio.platformio-ide",
+    "espressif.esp-idf-extension",
+    "astro-build.astro-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "ms-python.python",
+    "charliermarsh.ruff",
+    "wakatime.vscode-wakatime",
+    "ms-vscode.cpptools"
+  ]
+}

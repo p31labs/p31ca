@@ -1,0 +1,26 @@
+{
+  "name": "p31-spoon-gauge",
+  "displayName": "P31 Spoon Gauge",
+  "description": "Real-time energy/capacity tracking for neurodivergent operators",
+  "version": "0.1.0",
+  "publisher": "p31labs",
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "p31.spoonGauge.show", "title": "P31: Show Spoon Gauge" },
+      { "command": "p31.spoonGauge.deduct", "title": "P31: Deduct Spoon" },
+      { "command": "p31.spoonGauge.restore", "title": "P31: Restore Spoon" }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5.0"
+  }
+}

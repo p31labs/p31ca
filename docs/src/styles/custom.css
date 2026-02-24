@@ -1,0 +1,28 @@
+/*
+ * P31 Docs — Custom Starlight Theme
+ * Canonical palette: Void #050510, Background #0a0f1a,
+ * Phosphorus #2dffa0, Teal #4ecdc4, Coral #ff6b6b,
+ * Gold #ffe66d, Purple #a29bfe, Text #e0e6ed
+ */
+
+:root {
+  --sl-color-accent-low: #0a2e1f;
+  --sl-color-accent: #2dffa0;
+  --sl-color-accent-high: #a0ffcf;
+  --sl-font: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+:root[data-theme='dark'] {
+  --sl-color-bg: #0a0f1a;
+  --sl-color-bg-nav: #050510;
+  --sl-color-bg-sidebar: #080d16;
+  --sl-color-text: #e0e6ed;
+  --sl-color-text-accent: #2dffa0;
+}
+
+/* Taxonomy color highlights */
+.taxonomy-identity { color: #ff6b6b; }
+.taxonomy-health   { color: #4ecdc4; }
+.taxonomy-legal    { color: #ffe66d; }
+.taxonomy-technical { color: #a29bfe; }

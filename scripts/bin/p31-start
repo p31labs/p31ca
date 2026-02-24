@@ -1,0 +1,28 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -e
+cd ~/p31
+mkdir -p .logs .pids
+pkill -f "uvicorn buffer_agent" 2>/dev/null || true
+pkill -f "vite.*3031" 2>/dev/null || true
+pkill -f "code-server" 2>/dev/null || true
+sleep 1
+
+cd ~/p31/backend
+nohup uvicorn buffer_agent:app --host 0.0.0.0 --port 8031 --reload > ~/p31/.logs/backend.log 2>&1 &
+echo $! > ~/p31/.pids/backend.pid
+echo "[P31] Backend → :8031"
+
+cd ~/p31/frontend
+nohup npx vite --host 0.0.0.0 --port 3031 > ~/p31/.logs/frontend.log 2>&1 &
+echo $! > ~/p31/.pids/frontend.pid
+echo "[P31] Frontend → :3031"
+
+nohup code-server --bind-addr 0.0.0.0:8080 --auth none --disable-telemetry ~/p31 > ~/p31/.logs/code-server.log 2>&1 &
+echo $! > ~/p31/.pids/code-server.pid
+echo "[P31] code-server → :8080"
+
+sleep 2
+echo ""
+echo "Open Chrome → http://localhost:8080"
+echo "Dashboard  → http://localhost:3031"
+echo "The Centaur is mobile. 💜🔺💜"

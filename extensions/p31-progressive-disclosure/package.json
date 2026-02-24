@@ -1,0 +1,25 @@
+{
+  "name": "p31-progressive-disclosure",
+  "displayName": "P31 Progressive Disclosure",
+  "description": "UI complexity adapts to operator spoon level (Layers 0-3)",
+  "version": "0.1.0",
+  "publisher": "p31labs",
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "p31.disclosure.setLayer", "title": "P31: Set Disclosure Layer" },
+      { "command": "p31.disclosure.status", "title": "P31: Disclosure Status" }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5.0"
+  }
+}

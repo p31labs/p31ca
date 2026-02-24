@@ -1,0 +1,78 @@
+---
+title: Architecture
+description: P31 EDE system architecture and design principles
+---
+
+## Design Principles
+
+The P31 EDE follows three core principles:
+
+**Delta Topology** — Reject hierarchy and centralization. Every subsystem forms a
+self-supporting triangle of redundancy. The three-agent AI mesh (Claude, DeepSeek, Gemini)
+mirrors this: no single model is a dependency.
+
+**Local-First** — All data lives on the operator's machine first. Neo4j runs locally.
+Ollama provides offline AI. The system degrades gracefully when cloud services are unavailable.
+
+**Cognitive Sovereignty** — The operator's attention is the scarcest resource. Every design
+decision optimizes for spoon conservation: progressive disclosure, voltage scoring, batched
+notifications, and adaptive UI complexity.
+
+## System Topology
+
+```
+┌─────────────────────────────────────────────────┐
+│                  Caddy (:80/:443)                │
+│              Reverse Proxy + TLS                 │
+├────────────────┬────────────────┬────────────────┤
+│ Frontend :3031 │ Backend :8031  │ Docs :4321     │
+│ React + Three  │ FastAPI + WS   │ Astro Starlight│
+├────────────────┴────────────────┴────────────────┤
+│              AI Mesh (LiteLLM :4000)             │
+│  Claude │ DeepSeek │ Gemini │ Ollama (local)     │
+├──────────────────────────────────────────────────┤
+│           Neo4j Knowledge Graph :7474            │
+│           4-Axis Taxonomy (A/B/C/D)              │
+├──────────────────────────────────────────────────┤
+│        ESP32-S3 Firmware (Thick Click)           │
+│        WebSerial ↔ COBS/CRC8 @ 115200           │
+└──────────────────────────────────────────────────┘
+```
+
+## Protocol
+
+All hardware communication uses the P31 serial protocol:
+
+| Parameter | Value |
+|-----------|-------|
+| Magic byte | `0x31` (Phosphorus-31) |
+| CRC8 polynomial | `0x31` (CRC8-MAXIM) |
+| CRC8 init | `0xFF` |
+| Frame encoding | COBS |
+| Delimiter | `0x00` |
+| Baud | 115200 |
+| USB | Native CDC (GPIO19/20) |
+
+Frame structure: `COBS_ENCODE(magic | cmd | payload | crc8) + 0x00`
+
+## Taxonomy
+
+The knowledge graph organizes all information into four axes:
+
+| Axis | Domain | Color | Examples |
+|------|--------|-------|----------|
+| A | Identity | `#ff6b6b` | Authentication, profiles, personal data |
+| B | Health | `#4ecdc4` | Spoons, breathing, wellness tracking |
+| C | Legal | `#ffe66d` | Licenses, compliance, court documents |
+| D | Technical | `#a29bfe` | Code, infrastructure, firmware |
+
+## Progressive Disclosure
+
+UI complexity adapts to operator energy:
+
+| Layer | Name | Spoons | Visible |
+|-------|------|--------|---------|
+| 0 | Breathe | < 3 | Breathing pacer only |
+| 1 | Focus | 3-6 | Editor + AI chat |
+| 2 | Build | 6-9 | Full IDE (default) |
+| 3 | Command | 9-12 | All systems |

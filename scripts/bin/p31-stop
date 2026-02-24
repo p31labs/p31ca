@@ -1,0 +1,8 @@
+#!/data/data/com.termux/files/usr/bin/bash
+for pidfile in ~/p31/.pids/*.pid; do
+    [ -f "$pidfile" ] && kill "$(cat "$pidfile")" 2>/dev/null && rm "$pidfile"
+done
+pkill -f "uvicorn buffer_agent" 2>/dev/null || true
+pkill -f "vite.*3031" 2>/dev/null || true
+pkill -f "code-server" 2>/dev/null || true
+echo "[P31] All services stopped."

@@ -1,0 +1,60 @@
+{
+  "version": "1.0.0",
+  "description": "P31 Knowledge Graph Taxonomy — 4-Axis Classification",
+  "axes": {
+    "A": {
+      "name": "Identity",
+      "color": "#ff6b6b",
+      "description": "Authentication, profiles, personal data, social identity",
+      "keywords": ["identity", "auth", "user", "profile", "name", "account", "personal"],
+      "examples": ["user authentication", "profile settings", "personal data export"]
+    },
+    "B": {
+      "name": "Health",
+      "color": "#4ecdc4",
+      "description": "Spoon tracking, breathing, wellness, medical, sensory regulation",
+      "keywords": ["health", "spoon", "energy", "wellness", "breathing", "medical", "sensory"],
+      "examples": ["spoon depletion event", "breathing exercise log", "medication reminder"]
+    },
+    "C": {
+      "name": "Legal",
+      "color": "#ffe66d",
+      "description": "Licenses, compliance, court documents, contracts, fiscal",
+      "keywords": ["legal", "license", "compliance", "court", "contract", "agpl", "fiscal"],
+      "examples": ["AGPL-3.0 compliance check", "court filing deadline", "HCB fiscal report"]
+    },
+    "D": {
+      "name": "Technical",
+      "color": "#a29bfe",
+      "description": "Code, infrastructure, firmware, protocols, architecture",
+      "keywords": ["code", "firmware", "api", "docker", "protocol", "debug", "build"],
+      "examples": ["CRC8 implementation", "Docker compose config", "ESP32 GPIO setup"]
+    }
+  },
+  "voltage_scoring": {
+    "formula": "composite = urgency * 0.4 + emotional * 0.3 + cognitive * 0.3",
+    "scale": "0-10",
+    "thresholds": {
+      "GREEN": { "max": 3, "spoon_cost": 0.5 },
+      "YELLOW": { "min": 3, "max": 6, "spoon_cost": 1.0 },
+      "RED": { "min": 6, "max": 8, "spoon_cost": 2.0 },
+      "CRITICAL": { "min": 8, "spoon_cost": 3.0 }
+    }
+  },
+  "spoons": {
+    "baseline": 12,
+    "context_switch_cost": 1.5,
+    "social_masking_cost_per_hour": [3, 5],
+    "conflict_resolution_cost": 5,
+    "breathing_exercise_restore": 0.5,
+    "deep_work_30min_restore": 1.0
+  },
+  "progressive_disclosure": {
+    "layers": [
+      { "id": 0, "name": "Breathe", "spoon_range": [0, 3], "description": "Void palette, breathing pacer only" },
+      { "id": 1, "name": "Focus", "spoon_range": [3, 6], "description": "Editor + AI chat only" },
+      { "id": 2, "name": "Build", "spoon_range": [6, 9], "description": "Full IDE (default state)" },
+      { "id": 3, "name": "Command", "spoon_range": [9, 12], "description": "All systems, passphrase-gated" }
+    ]
+  }
+}

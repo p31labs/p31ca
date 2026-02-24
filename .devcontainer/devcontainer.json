@@ -1,0 +1,50 @@
+{
+  "name": "P31 EDE",
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "../docker-compose.dev.yml"
+  ],
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [3031, 8031, 7474, 7687, 11434, 4000, 4321],
+  "portsAttributes": {
+    "3031": { "label": "Frontend (Vite)", "onAutoForward": "notify" },
+    "8031": { "label": "Backend (FastAPI)", "onAutoForward": "notify" },
+    "7474": { "label": "Neo4j Browser", "onAutoForward": "notify" },
+    "7687": { "label": "Neo4j Bolt", "onAutoForward": "silent" },
+    "11434": { "label": "Ollama", "onAutoForward": "silent" },
+    "4000": { "label": "LiteLLM", "onAutoForward": "notify" },
+    "4321": { "label": "Astro Docs", "onAutoForward": "notify" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "continue.continue",
+        "platformio.platformio-ide",
+        "espressif.esp-idf-extension",
+        "astro-build.astro-vscode",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "ms-python.python",
+        "wakatime.vscode-wakatime",
+        "ms-vscode.cpptools"
+      ],
+      "settings": {
+        "editor.fontFamily": "'Atkinson Hyperlegible', 'JetBrains Mono', 'Fira Code', monospace",
+        "editor.fontSize": 16,
+        "editor.lineHeight": 1.6,
+        "workbench.colorTheme": "Default Dark Modern",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "eslint.experimental.useFlatConfig": true,
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" },
+    "ghcr.io/devcontainers/features/rust:1": {}
+  },
+  "postCreateCommand": "just setup",
+  "remoteUser": "vscode"
+}

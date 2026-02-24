@@ -1,0 +1,35 @@
+{
+  "name": "p31-cockpit-panel",
+  "displayName": "P31 Cockpit Panel",
+  "description": "Unified status dashboard for the P31 EDE",
+  "version": "0.1.0",
+  "publisher": "p31labs",
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "p31.cockpit.open", "title": "P31: Open Cockpit Panel" }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        { "id": "p31-cockpit", "title": "P31 Cockpit", "icon": "$(symbol-misc)" }
+      ]
+    },
+    "views": {
+      "p31-cockpit": [
+        { "id": "p31.cockpit.status", "name": "System Status" },
+        { "id": "p31.cockpit.nodes", "name": "Active Nodes" }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5.0"
+  }
+}

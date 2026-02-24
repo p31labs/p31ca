@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build outputs
+dist/
+build/
+.pio/
+.pioenvs/
+.piolibdeps/
+*.egg-info/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes (local)
+neo4j-data/
+ollama-data/
+
+# Test / Coverage
+coverage/
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Logs
+*.log
+logs/
+
+# Firmware build artifacts
+firmware/.pio/
+
+# VS Code (keep .vscode/settings.json and extensions.json)
+!.vscode/settings.json
+!.vscode/extensions.json
