@@ -2,7 +2,12 @@ fastapi>=0.115.0
 uvicorn[standard]>=0.32.0
 neo4j>=5.25.0
 pydantic>=2.9.0
-semantic-router>=0.1.0
+# older versions exist up through 0.0.20; loosen constraint to avoid install issues
+semantic-router>=0.0.20
 litellm>=1.50.0
 openai>=1.50.0
 websockets>=13.0
+pycrdt>=0.1
+pycrdt_websocket>=0.1
+ipfshttpclient>=0.8.0
+arweave-python-client>=1.0.18

@@ -1,3 +1,5 @@
+set windows-shell := ["C:/Program Files/Git/bin/bash.exe", "-c"]
+
 default:
     @just --list
 
@@ -6,7 +8,7 @@ setup:
     docker compose build
     cd frontend && npm install
     cd docs && npm install
-    cd backend && pip install -r requirements.txt
+    cd backend && python -m pip install -r requirements.txt
     @echo "✓ Setup complete. Run 'just dev' to start services."
 
 dev:
@@ -19,7 +21,7 @@ frontend:
     cd frontend && npm run dev
 
 backend:
-    cd backend && uvicorn buffer_agent:app --reload --port 8031
+    cd backend && python -m uvicorn buffer_agent:app --reload --port 8031
 
 docs:
     cd docs && npm run dev

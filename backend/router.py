@@ -10,8 +10,10 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 # Override OpenAI config to target local LiteLLM proxy at Port 4000
-os.environ.setdefault("OPENAI_API_KEY", "sk-local-proxy-key")
-os.environ.setdefault("OPENAI_BASE_URL", "http://localhost:4000/v1")
+# NOTE: sk-local-proxy-key is a placeholder for local development with LiteLLM proxy
+# In production, set OPENAI_API_KEY and OPENAI_BASE_URL environment variables
+os.environ.setdefault("OPENAI_API_KEY", os.getenv("LITELLM_KEY", "sk-local-dev"))
+os.environ.setdefault("OPENAI_BASE_URL", os.getenv("LITELLM_URL", "http://localhost:4000/v1"))
 
 router = APIRouter(prefix="/route", tags=["router"])
 

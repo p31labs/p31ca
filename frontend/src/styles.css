@@ -1,0 +1,1280 @@
+/* P31 Spaceship Earth — HUD Layout */
+
+:root {
+  --void: #050510;
+  --bg: #0a0f1a;
+  --phosphorus: #2dffa0;
+  --teal: #4ecdc4;
+  --coral: #ff6b6b;
+  --gold: #ffe66d;
+  --purple: #a29bfe;
+  --text: #e0e6ed;
+  --panel-bg: rgba(10, 15, 26, 0.85);
+  --panel-border: rgba(45, 255, 160, 0.12);
+  --sidebar-w: 320px;
+}
+
+/* ── Canvas fills viewport ── */
+canvas.dome-canvas {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ── HUD overlay grid ── */
+.hud-layout {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  display: grid;
+  grid-template-rows: 48px 1fr 32px;
+  grid-template-columns: 1fr var(--sidebar-w);
+  grid-template-areas:
+    "header  header"
+    "main    sidebar"
+    "footer  footer";
+  padding: 12px;
+  gap: 12px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── Header bar ── */
+.hud-header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+}
+
+.hud-header .title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-header .title .brand {
+  font-size: 15px;
+  letter-spacing: 3px;
+  color: var(--phosphorus);
+  font-weight: 700;
+}
+
+.hud-header .title .sub {
+  font-size: 13px;
+  color: var(--text);
+  opacity: 0.4;
+  letter-spacing: 1px;
+}
+
+.hud-header .gauge-area {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 32px;
+}
+
+.hud-header .status-live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.hud-header .status-live.online { color: var(--phosphorus); }
+.hud-header .status-live.offline { color: var(--text); opacity: 0.4; }
+
+/* ── Sidebar ── */
+.hud-sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+/* ── Panel base ── */
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.panel-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text);
+  opacity: 0.5;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* ── Footer ── */
+.hud-footer {
+  grid-area: footer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text);
+  opacity: 0.25;
+  padding: 0 8px;
+}
+
+/* ── Spoon gauge (header) ── */
+.spoon-gauge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.spoon-gauge .bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: rgba(224, 230, 237, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.spoon-gauge .bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease, background 0.5s ease;
+}
+
+.spoon-gauge .number {
+  font-size: 20px;
+  font-weight: 700;
+  min-width: 50px;
+  text-align: right;
+}
+
+.spoon-gauge .label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  opacity: 0.6;
+  min-width: 70px;
+}
+
+/* ── Activity feed ── */
+.activity-feed {
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(224, 230, 237, 0.05);
+  font-size: 11px;
+  color: var(--text);
+  opacity: 0.8;
+}
+
+.activity-item .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.activity-item .meta {
+  color: var(--text);
+  opacity: 0.35;
+  font-size: 10px;
+}
+
+/* ── Node inspector ── */
+.inspector-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.inspector-row .label { opacity: 0.5; }
+.inspector-row .value { font-weight: 600; }
+
+.inspector-empty {
+  font-size: 11px;
+  color: var(--text);
+  opacity: 0.3;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* ── Pulse overlay (phantom haptic) ── */
+.pulse-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(255,255,255,0.15);
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+  z-index: 25;
+}
+.pulse-overlay.active {
+  opacity: 1;
+  transition: opacity 0.15s ease-in;
+}
+
+/* ── Status bar ── */
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.status-cell {
+  font-size: 11px;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.status-cell .val {
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* ── Scrollbar ── */
+.hud-sidebar::-webkit-scrollbar,
+.activity-feed::-webkit-scrollbar {
+  width: 4px;
+}
+
+.hud-sidebar::-webkit-scrollbar-track,
+.activity-feed::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hud-sidebar::-webkit-scrollbar-thumb,
+.activity-feed::-webkit-scrollbar-thumb {
+  background: rgba(45, 255, 160, 0.15);
+  border-radius: 2px;
+}
+
+/* ── Breathing overlay (Canvas 2D quantum breath) ── */
+.breathing-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.breathing-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.breathing-hud {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.breathing-timer {
+  font-size: 72px;
+  font-weight: 200;
+  letter-spacing: 4px;
+  text-shadow: 0 0 40px currentColor;
+}
+
+.breathing-label {
+  font-size: 20px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  margin-top: 12px;
+  opacity: 0.8;
+}
+
+.breathing-hint {
+  font-size: 11px;
+  color: var(--text);
+  opacity: 0.3;
+  margin-top: 24px;
+  letter-spacing: 1px;
+}
+
+/* ── Spoon +/- buttons ── */
+.spoon-btn {
+  background: none;
+  border: 1px solid rgba(224, 230, 237, 0.15);
+  color: var(--text);
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  padding: 0;
+  line-height: 1;
+  pointer-events: auto;
+}
+
+.spoon-btn:hover {
+  border-color: var(--phosphorus);
+  color: var(--phosphorus);
+}
+
+/* ── Inspector content ── */
+.inspector-content {
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.7;
+  padding: 6px 0;
+  line-height: 1.4;
+  word-break: break-word;
+  border-bottom: 1px solid rgba(224, 230, 237, 0.06);
+  margin-bottom: 4px;
+}
+
+/* ── Voltage bars (shared between inspector + ingest form) ── */
+.voltage-preview,
+.voltage-section {
+  margin-top: 12px;
+}
+
+.voltage-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 11px;
+  color: var(--text);
+  opacity: 0.8;
+}
+
+.voltage-row span:first-child {
+  width: 65px;
+  opacity: 0.5;
+}
+
+.voltage-row span:last-child {
+  width: 30px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.voltage-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(224, 230, 237, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.voltage-bar div {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.voltage-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(224, 230, 237, 0.06);
+}
+
+.voltage-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ── Command menu overlay ── */
+.cmd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(5, 5, 16, 0.7);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+  pointer-events: auto;
+}
+
+.cmd-palette {
+  width: 480px;
+  max-width: 90vw;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.cmd-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--panel-border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.cmd-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.cmd-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cmd-item:hover,
+.cmd-item.selected {
+  background: rgba(45, 255, 160, 0.08);
+}
+
+.cmd-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--phosphorus);
+  opacity: 0.6;
+}
+
+.cmd-label {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.cmd-shortcut {
+  font-size: 11px;
+  color: var(--text);
+  opacity: 0.3;
+  padding: 2px 6px;
+  border: 1px solid rgba(224, 230, 237, 0.1);
+  border-radius: 4px;
+}
+
+.cmd-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--text);
+  opacity: 0.3;
+  font-size: 12px;
+}
+
+/* ── Ingest modal ── */
+.ingest-modal {
+  width: 520px;
+  max-width: 90vw;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 20px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.ingest-textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(224, 230, 237, 0.04);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+  outline: none;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.ingest-textarea:focus {
+  border-color: var(--phosphorus);
+}
+
+.axis-picker {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.axis-pill {
+  padding: 6px 14px;
+  border: 1px solid;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  letter-spacing: 1px;
+}
+
+.axis-pill.active {
+  font-weight: 700;
+}
+
+.ingest-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  padding: 8px 16px;
+  background: var(--phosphorus);
+  color: var(--void);
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.btn-primary:hover { opacity: 0.9; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-secondary {
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: rgba(224, 230, 237, 0.06);
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.5;
+  padding: 0;
+  line-height: 1;
+}
+
+.btn-close:hover { opacity: 1; }
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 11px;
+}
+
+.btn-export {
+  padding: 10px 16px;
+  background: rgba(224, 230, 237, 0.04);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.btn-export:hover {
+  background: rgba(45, 255, 160, 0.08);
+  border-color: var(--phosphorus);
+}
+
+/* ── AI Chat panel ── */
+.chat-panel {
+  position: fixed;
+  right: calc(var(--sidebar-w) + 24px);
+  top: 60px;
+  bottom: 44px;
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.chat-msg {
+  padding: 8px 12px;
+  margin-bottom: 4px;
+}
+
+.chat-msg.user .chat-msg-content {
+  color: var(--phosphorus);
+  font-size: 12px;
+}
+
+.chat-msg.assistant .chat-msg-content {
+  color: var(--text);
+  font-size: 12px;
+  opacity: 0.85;
+  white-space: pre-wrap;
+}
+
+.chat-input-wrap {
+  display: flex;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--panel-border);
+}
+
+.chat-input {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(224, 230, 237, 0.04);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  outline: none;
+}
+
+.chat-input:focus {
+  border-color: var(--phosphorus);
+}
+
+.streaming-indicator {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.route-badge {
+  padding: 2px 6px;
+  background: rgba(45, 255, 160, 0.1);
+  border-radius: 4px;
+  color: var(--phosphorus);
+  font-family: inherit;
+}
+
+/* ── Graph Brain overlay ── */
+.brain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--void);
+}
+
+.brain-overlay canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.brain-close {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 101;
+}
+
+/* ── Export modal ── */
+.export-modal {
+  width: 400px;
+  max-width: 90vw;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 20px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.export-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Responsive: sidebar collapses below ── */
+@media (max-width: 768px) {
+  .hud-layout {
+    --sidebar-w: 0px;
+    grid-template-columns: 1fr;
+    grid-template-rows: 48px 1fr auto 32px;
+    grid-template-areas:
+      "header"
+      "main"
+      "sidebar"
+      "footer";
+  }
+
+  .hud-sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+
+  .hud-sidebar .panel {
+    min-width: 260px;
+    flex-shrink: 0;
+  }
+}
+
+/* sovereign-aware breathing pacer styles */
+.breathing-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 5, 16, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.breathing-canvas {
+  width: 100vw;
+  height: 100vh;
+}
+
+.breathing-hud {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.breathing-stats {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* ── Toast notifications ── */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 380px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text);
+  font-size: 13px;
+  pointer-events: auto;
+  animation: toast-slide-in 0.3s ease-out;
+}
+
+@keyframes toast-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-success {
+  border-color: var(--phosphorus);
+}
+
+.toast-success .toast-icon {
+  color: var(--phosphorus);
+}
+
+.toast-error {
+  border-color: var(--coral);
+}
+
+.toast-error .toast-icon {
+  color: var(--coral);
+}
+
+.toast-warning {
+  border-color: var(--gold);
+}
+
+.toast-warning .toast-icon {
+  color: var(--gold);
+}
+
+.toast-info {
+  border-color: var(--teal);
+}
+
+.toast-info .toast-icon {
+  color: var(--teal);
+}
+
+.toast-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+}
+
+.toast-dismiss {
+  background: none;
+  border: none;
+  color: var(--text);
+  opacity: 0.5;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.toast-dismiss:hover {
+  opacity: 1;
+}
+
+/* ── Error banner (inline errors) ── */
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid var(--coral);
+  border-radius: 6px;
+  margin-bottom: 12px;
+  color: var(--coral);
+  font-size: 12px;
+}
+
+.error-icon {
+  flex-shrink: 0;
+}
+
+.error-message {
+  flex: 1;
+}
+
+.error-dismiss {
+  background: none;
+  border: none;
+  color: var(--coral);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.error-dismiss:hover {
+  opacity: 1;
+}
+
+/* ── Loading spinner ── */
+.spinner-small {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(5, 5, 16, 0.3);
+  border-top-color: var(--void);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 6px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Screen reader only (accessibility) ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Enhanced connection status ── */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: rgba(224, 230, 237, 0.05);
+  cursor: help;
+}
+
+.status-indicator.live {
+  color: var(--phosphorus);
+  background: rgba(45, 255, 160, 0.08);
+}
+
+.status-indicator.reconnecting {
+  color: var(--gold);
+  background: rgba(255, 230, 109, 0.08);
+  animation: status-pulse 1.5s ease-in-out infinite;
+}
+
+.status-indicator.degraded {
+  color: var(--gold);
+  background: rgba(255, 230, 109, 0.08);
+}
+
+.status-indicator.offline {
+  color: var(--text);
+  opacity: 0.5;
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-indicator.reconnecting .status-dot {
+  animation: dot-blink 0.8s ease-in-out infinite;
+}
+
+@keyframes dot-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.status-text {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.status-detail {
+  opacity: 0.6;
+  font-size: 10px;
+}
+
+/* ── Axis picker fieldset reset ── */
+.axis-picker {
+  border: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+}
+
+/* ── Button loading state ── */
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary .spinner-small {
+  border-color: rgba(5, 5, 16, 0.3);
+  border-top-color: var(--void);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Quantum UI/UX — Breath-synced effects
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Breath CSS custom properties (updated by useBreathSync) */
+:root {
+  --breath-phase: 0;    /* 0-1 breathing intensity */
+  --breath-cycle: 0;    /* 0-1 full cycle progress */
+}
+
+/* ── Quantum shimmer — 12s cycle panel glow ── */
+@keyframes quantum-shimmer {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(45, 255, 160, 0.05),
+      inset 0 0 30px rgba(45, 255, 160, 0.02);
+  }
+  25% {
+    box-shadow:
+      0 0 40px rgba(45, 255, 160, 0.12),
+      inset 0 0 50px rgba(45, 255, 160, 0.06);
+  }
+  50% {
+    box-shadow:
+      0 0 35px rgba(45, 255, 160, 0.1),
+      inset 0 0 45px rgba(45, 255, 160, 0.05);
+  }
+  75% {
+    box-shadow:
+      0 0 25px rgba(45, 255, 160, 0.07),
+      inset 0 0 35px rgba(45, 255, 160, 0.03);
+  }
+}
+
+.panel.quantum-shimmer {
+  animation: quantum-shimmer 12s ease-in-out infinite;
+}
+
+/* ── Entanglement pulse — triggered on node entangle ── */
+@keyframes entangle-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(45, 255, 160, 0.6);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(45, 255, 160, 0.3);
+    transform: scale(1.02);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(45, 255, 160, 0);
+    transform: scale(1);
+  }
+}
+
+.entangle-pulse {
+  animation: entangle-pulse 0.5s ease-out;
+}
+
+/* ── Chromatic flicker — text aberration at low spoons ── */
+@keyframes chromatic-flicker {
+  0%, 100% {
+    text-shadow:
+      -1px 0 var(--coral),
+      1px 0 var(--teal);
+    opacity: 1;
+  }
+  25% {
+    text-shadow:
+      -2px 0 var(--coral),
+      2px 0 var(--teal);
+    opacity: 0.95;
+  }
+  50% {
+    text-shadow:
+      -1px 0 var(--teal),
+      1px 0 var(--coral);
+    opacity: 0.98;
+  }
+  75% {
+    text-shadow:
+      -3px 0 var(--coral),
+      3px 0 var(--teal);
+    opacity: 0.92;
+  }
+}
+
+.chromatic-stress {
+  animation: chromatic-flicker 0.15s linear infinite;
+}
+
+/* ── Breath-synced brand glow ── */
+.hud-header .brand {
+  text-shadow: 0 0 calc(10px + var(--breath-phase) * 20px) var(--phosphorus);
+  transition: text-shadow 0.1s linear;
+}
+
+/* ── Quantum field border pulse ── */
+@keyframes quantum-border {
+  0%, 100% {
+    border-color: rgba(45, 255, 160, 0.12);
+  }
+  50% {
+    border-color: rgba(45, 255, 160, 0.25);
+  }
+}
+
+.panel.quantum-border {
+  animation: quantum-border 12s ease-in-out infinite;
+}
+
+/* ── Superposition ghost effect for elements ── */
+@keyframes superposition-flicker {
+  0%, 100% { opacity: 0.15; transform: translate(0, 0); }
+  10% { opacity: 0.2; transform: translate(1px, -1px); }
+  20% { opacity: 0.12; transform: translate(-1px, 1px); }
+  30% { opacity: 0.18; transform: translate(1px, 0); }
+  40% { opacity: 0.1; transform: translate(0, 1px); }
+  50% { opacity: 0.22; transform: translate(-1px, -1px); }
+  60% { opacity: 0.14; transform: translate(1px, 1px); }
+  70% { opacity: 0.19; transform: translate(0, -1px); }
+  80% { opacity: 0.11; transform: translate(-1px, 0); }
+  90% { opacity: 0.17; transform: translate(1px, -1px); }
+}
+
+.ghost-element {
+  position: absolute;
+  pointer-events: none;
+  animation: superposition-flicker 0.8s linear infinite;
+  mix-blend-mode: screen;
+}
+
+/* ── Wavefunction collapse animation ── */
+@keyframes wavefunction-collapse {
+  0% {
+    transform: scale(1.5);
+    opacity: 0.6;
+    filter: blur(8px);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.wavefunction-collapsing {
+  animation: wavefunction-collapse 0.4s ease-out forwards;
+}
+
+/* ── Energy field interference pattern ── */
+@keyframes interference-wave {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.interference-pattern {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(45, 255, 160, 0.03) 25%,
+    transparent 50%,
+    rgba(78, 205, 196, 0.03) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: interference-wave 8s linear infinite;
+}
+
+/* ── Quantum entanglement thread glow ── */
+.entanglement-active {
+  filter: drop-shadow(0 0 4px var(--phosphorus));
+}
+
+/* ── Low spoons stress indicators ── */
+.spoon-stress-low .hud-header .brand {
+  animation: chromatic-flicker 0.2s linear infinite;
+}
+
+.spoon-stress-critical {
+  animation: stress-shake 0.1s linear infinite;
+}
+
+@keyframes stress-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1px); }
+  75% { transform: translateX(1px); }
+}
+
+/* ── Probability cloud halo ── */
+.probability-halo {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(45, 255, 160, 0.15) 0%,
+    rgba(45, 255, 160, 0.08) 40%,
+    transparent 70%
+  );
+  animation: halo-pulse 3s ease-in-out infinite;
+}
+
+@keyframes halo-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.9;
+  }
+}
+
+/* ── Quantum state indicator ── */
+.quantum-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--phosphorus);
+  opacity: 0.7;
+}
+
+.quantum-state::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: quantum-state-blink 2s ease-in-out infinite;
+}
+
+@keyframes quantum-state-blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}

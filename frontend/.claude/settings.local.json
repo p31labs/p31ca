@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(python -m uvicorn:*)",
+      "Bash(pip install:*)",
+      "Bash(python -c:*)",
+      "Bash(C:/Python314/python.exe -m pip install:*)",
+      "Bash(C:/Python314/python.exe -m uvicorn:*)",
+      "Bash(C:/Python314/python.exe -c \"import sys; print\\(sys.path\\)\")",
+      "Bash(C:/Python314/python.exe -m pip show pycrdt-websocket)",
+      "Bash(C:/Python314/python.exe:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(tree:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(pio --version:*)"
+    ]
+  }
+}

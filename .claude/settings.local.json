@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit:*)",
+      "Bash(git remote add origin https://github.com/p31labs/p31ca.git)",
+      "Bash(git push -u origin main)",
+      "Bash(command -v scoop choco npm pip)",
+      "Bash(where.exe scoop choco npm pip)"
+    ]
+  }
+}
